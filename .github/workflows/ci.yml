@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: build / test / lint
+    runs-on: macos-15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Swift 6 言語モードでビルドする。使った版は必ず記録に残す
+      - name: 版を記録する
+        run: swift --version
+
+      - name: 道具を入れる
+        run: brew install swiftformat swiftlint
+
+      # 必ず「整形 → Lint」の順。整形で行が動くと Lint の行番号がずれる（§10-2）
+      # CI は整形しない。差分があれば落とすだけである
+      - name: 整形（差分があれば落とす）
+        run: swiftformat --lint .
+
+      - name: 規約（INV-3〜INV-13）
+        run: swiftlint --strict
+
+      # ルールが空振りしていても Lint は緑に見えるので、ルール自体を検収する（§9-4）
+      - name: Lint ルールの検収（違反注入 13 件）
+        run: ./scripts/test-lint-rules.sh
+
+      - name: ビルド
+        run: swift build
+
+      - name: テスト
+        run: swift test

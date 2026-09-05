@@ -1,0 +1,48 @@
+# XcodeGen の入力。**これが Xcode プロジェクトの正**である（裁定 D-7・D-24）。
+#
+#   brew install xcodegen
+#   cd App && xcodegen generate      # GitHubSampleApp.xcodeproj を作る
+#
+# 生成物（.xcodeproj）はコミットしない。project.pbxproj は差分が読めず、
+# 壊れたときに原因が追えないためである（docs/05-decisions.md D-7）。
+name: GitHubSampleApp
+
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+packages:
+  # 画面もロジックもすべてこちら側にある。App は起動して合成するだけの殻である
+  GitHubSample:
+    path: ..
+
+targets:
+  GitHubSampleApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    dependencies:
+      # AppComposition だけに依存する。Feature を直接足さないこと（層を飛び越える）
+      - package: GitHubSample
+        product: AppComposition
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.GitHubSampleApp
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        # Package 側と揃える（docs/05-decisions.md D-14）
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE: YES
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        TARGETED_DEVICE_FAMILY: "1"
+        # 任意。App/Config.xcconfig で GITHUB_TOKEN を渡すとここに入る。
+        # 未定義なら空文字になり、CompositionRoot.tokenFromBundle が nil を返す
+        INFOPLIST_KEY_GITHUB_TOKEN: $(GITHUB_TOKEN)

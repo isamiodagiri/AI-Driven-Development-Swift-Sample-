@@ -1,0 +1,390 @@
+{
+  "total_count": 42,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 1001,
+      "node_id": "R_1",
+      "name": "repo-1",
+      "full_name": "owner-1/repo-1",
+      "owner": {
+        "login": "owner-1",
+        "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-1/repo-1",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66999,
+      "watchers_count": 66999,
+      "forks_count": 10199,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    },
+    {
+      "id": 1002,
+      "node_id": "R_2",
+      "name": "repo-2",
+      "full_name": "owner-2/repo-2",
+      "owner": {
+        "login": "owner-2",
+        "avatar_url": "https://avatars.githubusercontent.com/u/2?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-2/repo-2",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66998,
+      "watchers_count": 66998,
+      "forks_count": 10198,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    },
+    {
+      "id": 1003,
+      "node_id": "R_3",
+      "name": "repo-3",
+      "full_name": "owner-3/repo-3",
+      "owner": {
+        "login": "owner-3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/3?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-3/repo-3",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66997,
+      "watchers_count": 66997,
+      "forks_count": 10197,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    },
+    {
+      "id": 1004,
+      "node_id": "R_4",
+      "name": "repo-4",
+      "full_name": "owner-4/repo-4",
+      "owner": {
+        "login": "owner-4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/4?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-4/repo-4",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66996,
+      "watchers_count": 66996,
+      "forks_count": 10196,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    },
+    {
+      "id": 1005,
+      "node_id": "R_5",
+      "name": "repo-5",
+      "full_name": "owner-5/repo-5",
+      "owner": {
+        "login": "owner-5",
+        "avatar_url": "https://avatars.githubusercontent.com/u/5?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-5/repo-5",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66995,
+      "watchers_count": 66995,
+      "forks_count": 10195,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    },
+    {
+      "id": 1006,
+      "node_id": "R_6",
+      "name": "repo-6",
+      "full_name": "owner-6/repo-6",
+      "owner": {
+        "login": "owner-6",
+        "avatar_url": "https://avatars.githubusercontent.com/u/6?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-6/repo-6",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66994,
+      "watchers_count": 66994,
+      "forks_count": 10194,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    },
+    {
+      "id": 1007,
+      "node_id": "R_7",
+      "name": "repo-7",
+      "full_name": "owner-7/repo-7",
+      "owner": {
+        "login": "owner-7",
+        "avatar_url": "https://avatars.githubusercontent.com/u/7?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-7/repo-7",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66993,
+      "watchers_count": 66993,
+      "forks_count": 10193,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    },
+    {
+      "id": 1008,
+      "node_id": "R_8",
+      "name": "repo-8",
+      "full_name": "owner-8/repo-8",
+      "owner": {
+        "login": "owner-8",
+        "avatar_url": "https://avatars.githubusercontent.com/u/8?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-8/repo-8",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66992,
+      "watchers_count": 66992,
+      "forks_count": 10192,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    },
+    {
+      "id": 1009,
+      "node_id": "R_9",
+      "name": "repo-9",
+      "full_name": "owner-9/repo-9",
+      "owner": {
+        "login": "owner-9",
+        "avatar_url": "https://avatars.githubusercontent.com/u/9?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-9/repo-9",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66991,
+      "watchers_count": 66991,
+      "forks_count": 10191,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    },
+    {
+      "id": 1010,
+      "node_id": "R_10",
+      "name": "repo-10",
+      "full_name": "owner-10/repo-10",
+      "owner": {
+        "login": "owner-10",
+        "avatar_url": "https://avatars.githubusercontent.com/u/10?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-10/repo-10",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66990,
+      "watchers_count": 66990,
+      "forks_count": 10190,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    },
+    {
+      "id": 1011,
+      "node_id": "R_11",
+      "name": "repo-11",
+      "full_name": "owner-11/repo-11",
+      "owner": {
+        "login": "owner-11",
+        "avatar_url": "https://avatars.githubusercontent.com/u/11?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-11/repo-11",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66989,
+      "watchers_count": 66989,
+      "forks_count": 10189,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    },
+    {
+      "id": 1012,
+      "node_id": "R_12",
+      "name": "repo-12",
+      "full_name": "owner-12/repo-12",
+      "owner": {
+        "login": "owner-12",
+        "avatar_url": "https://avatars.githubusercontent.com/u/12?v=4"
+      },
+      "private": false,
+      "html_url": "https://github.com/owner-12/repo-12",
+      "description": "The Swift Programming Language",
+      "fork": false,
+      "stargazers_count": 66988,
+      "watchers_count": 66988,
+      "forks_count": 10188,
+      "open_issues_count": 340,
+      "language": "C++",
+      "updated_at": "2026-09-01T12:00:00Z",
+      "pushed_at": "2026-09-01T11:00:00Z",
+      "created_at": "2010-07-01T00:00:00Z",
+      "default_branch": "main",
+      "archived": false,
+      "topics": [
+        "swift"
+      ],
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+# SwiftPM
+.build/
+.swiftpm/
+# Package.resolved はコミットする。依存が1つ（ViewInspector）だけとはいえ、
+# CI と手元で同じ版を使わないと「手元では緑」が起きる（裁定 D-18）
+
+# Xcode。**.xcodeproj は XcodeGen の生成物**なのでコミットしない。
+# 正は App/project.yml である（裁定 D-7・D-24）
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+DerivedData/
+App/.build-xcode/
+
+# トークン。バンドルに埋めたトークンは取り出せる（docs/02-github-api.md §5）
+App/Config.xcconfig
+
+# macOS
+.DS_Store
