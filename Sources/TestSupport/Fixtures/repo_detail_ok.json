@@ -1,0 +1,35 @@
+{
+  "id": 1001,
+  "node_id": "R_1",
+  "name": "repo-1",
+  "full_name": "owner-1/repo-1",
+  "owner": {
+    "login": "owner-1",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4"
+  },
+  "private": false,
+  "html_url": "https://github.com/owner-1/repo-1",
+  "description": "The Swift Programming Language",
+  "fork": false,
+  "stargazers_count": 66999,
+  "watchers_count": 66999,
+  "forks_count": 10199,
+  "open_issues_count": 340,
+  "language": "C++",
+  "updated_at": "2026-09-01T12:00:00Z",
+  "pushed_at": "2026-09-01T11:00:00Z",
+  "created_at": "2010-07-01T00:00:00Z",
+  "default_branch": "main",
+  "archived": false,
+  "topics": [
+    "swift",
+    "compiler"
+  ],
+  "license": {
+    "key": "apache-2.0",
+    "name": "Apache License 2.0",
+    "spdx_id": "Apache-2.0"
+  },
+  "subscribers_count": 1234,
+  "homepage": "https://swift.org"
+}

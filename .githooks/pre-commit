@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+#
+# staged された .swift に対して「整形 → 規約」を確認する（docs/01-architecture.md §10-3）。
+#
+# 有効化はクローンごとの git 設定である。リポジトリに置くだけでは動かない。
+#   ./scripts/setup.sh    # core.hooksPath を .githooks に向ける
+#
+# **確実に効くのは CI だけ**であり、この hook は手元での早期発見のためのものである。
+# 急ぐときは git commit --no-verify で飛ばせる（CI では飛ばせない）。
+#
+# macOS の既定の bash は 3.2 なので、mapfile や連想配列は使えない。
+#
+set -uo pipefail
+
+staged=$(git diff --cached --name-only --diff-filter=ACMR -- '*.swift')
+[ -z "$staged" ] && exit 0
+
+# パスに空白を含むファイルは本PJに無い。改行区切りのまま配列にする
+OLD_IFS=$IFS
+IFS=$'\n'
+set -f
+files=($staged)
+set +f
+IFS=$OLD_IFS
+
+status=0
+
+# 必ず「整形 → Lint」の順。整形で行が動くと Lint の行番号がずれる（§10-2）
+# ここは確認だけで、整形はしない（勝手に直すと staged と作業ツリーがずれる）
+if command -v swiftformat >/dev/null 2>&1; then
+  if ! swiftformat --lint "${files[@]}"; then
+    echo ""
+    echo "✗ 整形されていない。swiftformat . を実行し、直った分を add してから commit すること。"
+    status=1
+  fi
+else
+  echo "! swiftformat が無いので整形の確認を飛ばした（brew install swiftformat）"
+fi
+
+if command -v swiftlint >/dev/null 2>&1; then
+  if ! swiftlint lint --strict --quiet "${files[@]}"; then
+    echo ""
+    echo "✗ 規約に違反している（docs/01-architecture.md §9-1）。"
+    status=1
+  fi
+else
+  echo "! swiftlint が無いので規約の確認を飛ばした（brew install swiftlint）"
+fi
+
+exit $status
