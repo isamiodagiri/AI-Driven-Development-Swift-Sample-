@@ -559,3 +559,21 @@ swiftlint --strict       # 規約を確認する（CI）
 - `swiftformat --lint .` が緑であり、**整形を崩すと落ちる**（`consecutiveSpaces` 他が発火する）
 - `swiftlint --strict` が緑であり、**`./scripts/test-lint-rules.sh` が SwiftLint 本体で 13 件緑**
 - `Domain` から `import Repository` を書くと、**`circular dependency between modules` でビルドが落ちる**
+
+### 10-5. 道具の版を固定する（2026-09-06・CI の初回で落ちた）
+
+最初の CI で **`swiftformat --lint` だけが落ちた**。手元は緑だった。
+
+原因は、CI が `brew install swiftformat` で**最新版**を入れていたことである。
+新しい版で**既定で有効になったルール**（`wrapIfStatementBodies` など）が発火し、
+手元の 0.60.0 では出ない差分が 13 ファイル分出た。
+
+- **整形の設定を固定しても、整形する道具の版が動けば結果は動く。**
+  `--swift-version` を明示した理由（§10-2）と同じ話が、**道具そのものにも要る**
+- **直し方**: CI は GitHub Release の配布物を**版を指定して落として使う**。
+  `.github/workflows/ci.yml` の `SWIFTFORMAT_VERSION` / `SWIFTLINT_VERSION` が正である
+- **上げる手順**: 手元で同じ版に上げ、`swiftformat .` を当てて緑にしてから、CI の版を上げる。
+  **CI の版だけを上げない**（そのとき初めて、誰も見ていない差分が入る）
+
+> **この失敗は、CI を一度も走らせずに「CI がある」と書いていたら見つからなかった。**
+> 設定ファイルが在ることと、それが通ることは別である。

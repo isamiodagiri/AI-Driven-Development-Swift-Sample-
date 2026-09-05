@@ -9,6 +9,13 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  # **版を固定する。** brew の最新版を入れると、新しく既定で入ったルールが
+  # 手元では出ないのに CI でだけ落ちる（2026-09-06 に実際に起きた・docs/01 §10-5）。
+  # 上げるときは、手元で同じ版に上げて緑にしてから、ここを上げる。
+  SWIFTFORMAT_VERSION: "0.60.0"
+  SWIFTLINT_VERSION: "0.63.2"
+
 jobs:
   build-and-test:
     name: build / test / lint
@@ -21,10 +28,25 @@ jobs:
       - name: 版を記録する
         run: swift --version
 
-      - name: 道具を入れる
-        run: brew install swiftformat swiftlint
+      - name: 道具を入れる（版を固定する）
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/tools"
+          curl -sSfL -o "$RUNNER_TEMP/swiftformat.zip" \
+            "https://github.com/nicklockwood/SwiftFormat/releases/download/${SWIFTFORMAT_VERSION}/swiftformat.zip"
+          curl -sSfL -o "$RUNNER_TEMP/swiftlint.zip" \
+            "https://github.com/realm/SwiftLint/releases/download/${SWIFTLINT_VERSION}/portable_swiftlint.zip"
+          unzip -qo "$RUNNER_TEMP/swiftformat.zip" -d "$RUNNER_TEMP/tools"
+          unzip -qo "$RUNNER_TEMP/swiftlint.zip" -d "$RUNNER_TEMP/tools"
+          chmod +x "$RUNNER_TEMP/tools/swiftformat" "$RUNNER_TEMP/tools/swiftlint"
+          echo "$RUNNER_TEMP/tools" >> "$GITHUB_PATH"
 
-      # 必ず「整形 → Lint」の順。整形で行が動くと Lint の行番号がずれる（§10-2）
+      - name: 道具の版を記録する
+        run: |
+          swiftformat --version
+          swiftlint version
+
+      # 必ず「整形 → Lint」の順。整形で行が動くと Lint の行番号がずれる（docs/01 §10-2）
       # CI は整形しない。差分があれば落とすだけである
       - name: 整形（差分があれば落とす）
         run: swiftformat --lint .
@@ -32,7 +54,7 @@ jobs:
       - name: 規約（INV-3〜INV-13）
         run: swiftlint --strict
 
-      # ルールが空振りしていても Lint は緑に見えるので、ルール自体を検収する（§9-4）
+      # ルールが空振りしていても Lint は緑に見えるので、ルール自体を検収する（docs/01 §9-4）
       - name: Lint ルールの検収（違反注入 13 件）
         run: ./scripts/test-lint-rules.sh
 

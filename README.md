@@ -71,7 +71,10 @@ brew install xcodegen
 cd App && xcodegen generate && open GitHubSampleApp.xcodeproj
 ```
 
-整形は **SwiftFormat**、規約は **SwiftLint**（どちらも `brew install`）。
+整形は **SwiftFormat 0.60.0**、規約は **SwiftLint 0.63.2**（どちらも `brew install`）。
+**版は CI で固定してある**（`.github/workflows/ci.yml`）。
+道具の版が動くと整形結果も動くので、**手元と CI で同じ版を使う**
+（[01 §10-5](docs/01-architecture.md)）。
 **フォーマッタは1つだけ置き、同じことを両方には見せない**（重なるルールは片方を切ってある）。
 上の5つは `.github/workflows/ci.yml` が CI でも同じ順で回す。
 `.githooks/pre-commit` は手元で同じことを staged なファイルにだけ行う
