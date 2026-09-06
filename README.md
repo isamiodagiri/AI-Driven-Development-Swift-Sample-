@@ -7,10 +7,10 @@ GitHub の**公開情報**を検索・閲覧する SwiftUI サンプルアプリ
 
 > **現在の状態**: M1〜M5 まで実装済み。
 > Swift 6.2.1 / SwiftLint 0.63.2 / SwiftFormat 0.60.0 で、
-> **`swift build`・`swift test`（128 件）・`swiftlint --strict`・`swiftformat --lint .`・
+> **`swift build`・`swift test`（129 件）・`swiftlint --strict`・`swiftformat --lint .`・
 > `./scripts/test-lint-rules.sh`（13 件）がすべて緑**である（2026-09-06 に実機で確認）。
 >
-> **TS は 103 件のうち 102 件が実装済み**で、残る1件（TS-94・スワイプ削除）は
+> **TS は 104 件のうち 103 件が実装済み**で、残る1件（TS-94・スワイプ削除）は
 > **`ViewInspector` が `.swipeActions` に届かないため観測できない**
 > — 書き忘れではないことを [04 §3-1](docs/04-test-strategy.md) に理由ごと残してある。
 > **`App/` の Xcode プロジェクトは XcodeGen で生成する**（[App/README.md](App/README.md)・裁定 D-7・D-24）。

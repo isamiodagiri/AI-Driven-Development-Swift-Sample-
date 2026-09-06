@@ -24,6 +24,13 @@ public actor StubHTTPClient: HTTPClient {
 
     public private(set) var requests: [HTTPRequest] = []
 
+    /// **キャンセルされて終わった要求**のキー。
+    ///
+    /// 「前の検索を止めた」（AC-16）は、これが無いと観測できない。
+    /// 状態だけを見ると、世代番号で古い応答を弾いていても同じ絵になるためである
+    /// — `cancel()` を消しても誰も赤くならない状態が実際にあった（docs/04-test-strategy.md §6-3）。
+    public private(set) var cancelledKeys: [String] = []
+
     public init() {}
 
     // MARK: - 仕込み
@@ -72,6 +79,11 @@ public actor StubHTTPClient: HTTPClient {
         requests.map { $0.url.path() }
     }
 
+    /// キャンセルされて終わった要求の検索語。
+    public func cancelledQueries() -> [String] {
+        cancelledKeys
+    }
+
     /// 仕込まれているキーのうち、もっとも具体的なものを選ぶ（`swift#2` → `swift` → パス）。
     private func key(for request: HTTPRequest) -> String {
         let query = request.queryItems.first(where: { $0.name == "q" })?.value
@@ -97,13 +109,15 @@ public actor StubHTTPClient: HTTPClient {
         if manualKeys.contains(key) {
             while !releasedKeys.contains(key) {
                 if !ignoresCancellation, Task.isCancelled {
+                    cancelledKeys.append(key)
                     throw CancellationError()
                 }
                 try? await Task.sleep(for: .milliseconds(2))
             }
         }
 
-        if !ignoresCancellation {
+        if !ignoresCancellation, Task.isCancelled {
+            cancelledKeys.append(key)
             try Task.checkCancellation()
         }
 

@@ -171,6 +171,27 @@ struct SearchViewModelTests {
 
     // MARK: - キャンセルと順序
 
+    @Test("TS-34b 新しい検索が始まると、前の要求が実際にキャンセルされる", .timeLimit(.minutes(1)))
+    func actuallyCancelsPreviousRequest() async {
+        let sut = SearchFixture.makeSUT()
+        await sut.client.set(.success(Fixture.response("search_repositories_ok")), forQuery: "swi", manualRelease: true)
+        await sut.client.set(.success(Fixture.response("search_repositories_last_page")), forQuery: "swift")
+
+        sut.viewModel.query = "swi"
+        await waitUntilOnMain { sut.viewModel.displayState.phase == .loading }
+        sut.viewModel.query = "swift"
+
+        // **止めたことそのもの**を見る。TS-34 は「新しい結果が残る」しか見ておらず、
+        // 世代番号だけでも緑になってしまう（docs/04-test-strategy.md §6-3）
+        await waitUntil { await sut.client.cancelledQueries().contains("swi") }
+        let cancelled = await sut.client.cancelledQueries()
+
+        // 先に解放しておく。cancel されない実装では保留の要求が残り続け、
+        // **テストが赤ではなく「止まったまま」になる**（docs/04-test-strategy.md §6-3）
+        await sut.client.release("swi")
+        #expect(cancelled.contains("swi"))
+    }
+
     @Test("TS-34 新しい検索が始まると、前の検索は止まる")
     func cancelsPreviousSearch() async {
         let sut = SearchFixture.makeSUT()

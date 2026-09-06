@@ -45,7 +45,7 @@ struct FavoriteUseCaseTests {
         #expect(requestCount == 0)
     }
 
-    @Test("ID の購読は、変化のたびに ID の集合を流す")
+    @Test("ID の購読は、変化のたびに ID の集合を流す", .timeLimit(.minutes(1)))
     func observesIdentifiers() async throws {
         let repository = makeRepository()
         let observe = ObserveFavoriteIDsUseCase(repository: repository)

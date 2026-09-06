@@ -85,7 +85,10 @@ struct FavoriteRepositoryTests {
         #expect(favorites.isEmpty)
     }
 
-    @Test("TS-83 購読した瞬間に現在値が1回流れる")
+    /// `await iterator.next()` は、通知が来なければ**永久に待つ**。
+    /// 時間制限を付けないと、通知を止める不具合が「赤」ではなく「止まったまま」になる
+    /// — 変異検証で実際に踏んだ（docs/04-test-strategy.md §6-3）。
+    @Test("TS-83 購読した瞬間に現在値が1回流れる", .timeLimit(.minutes(1)))
     func yieldsCurrentValueOnSubscribe() async throws {
         let repository = makeRepository()
         try await repository.add(.stub(id: 1))
@@ -97,7 +100,7 @@ struct FavoriteRepositoryTests {
         #expect(first?.map(\.id) == [RepoID(1)])
     }
 
-    @Test("TS-84 購読者が2つあるとき、両方に同じ変化が届く")
+    @Test("TS-84 購読者が2つあるとき、両方に同じ変化が届く", .timeLimit(.minutes(1)))
     func broadcastsToAllSubscribers() async throws {
         let repository = makeRepository()
         let streamA = await repository.stream()
@@ -115,7 +118,7 @@ struct FavoriteRepositoryTests {
         #expect(receivedB?.map(\.id) == [RepoID(42)])
     }
 
-    @Test("TS-85 購読を終えると continuation が捨てられる（積み上がらない）")
+    @Test("TS-85 購読を終えると continuation が捨てられる（積み上がらない）", .timeLimit(.minutes(1)))
     func releasesContinuationOnTermination() async {
         let repository = makeRepository()
 
