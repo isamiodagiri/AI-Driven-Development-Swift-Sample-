@@ -22,7 +22,7 @@ jobs:
     runs-on: macos-15
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Swift 6 言語モードでビルドする。使った版は必ず記録に残す
       - name: 版を記録する
