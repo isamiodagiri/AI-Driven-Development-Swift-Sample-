@@ -24,6 +24,14 @@ public actor StubHTTPClient: HTTPClient {
 
     public private(set) var requests: [HTTPRequest] = []
 
+    /// **応答を返し終えた要求**のキー。
+    ///
+    /// 「古い応答が後から届いても上書きしない」（AC-17）は、
+    /// **古い応答が実際に届いた後で**状態を見なければ確かめられない。
+    /// 固定時間の待ちで代用すると、届く前に測って**偽の緑**になる
+    /// — 負荷をかけた変異検証で実際に起きた（docs/04-test-strategy.md §6-4）。
+    public private(set) var deliveredKeys: [String] = []
+
     /// **キャンセルされて終わった要求**のキー。
     ///
     /// 「前の検索を止めた」（AC-16）は、これが無いと観測できない。
@@ -84,6 +92,11 @@ public actor StubHTTPClient: HTTPClient {
         cancelledKeys
     }
 
+    /// 応答を返し終えた要求の検索語。
+    public func deliveredQueries() -> [String] {
+        deliveredKeys
+    }
+
     /// 仕込まれているキーのうち、もっとも具体的なものを選ぶ（`swift#2` → `swift` → パス）。
     private func key(for request: HTTPRequest) -> String {
         let query = request.queryItems.first(where: { $0.name == "q" })?.value
@@ -124,6 +137,7 @@ public actor StubHTTPClient: HTTPClient {
         guard let outcome = outcomes[key] ?? defaultOutcome else {
             throw URLError(.unsupportedURL)
         }
+        deliveredKeys.append(key)
         switch outcome {
         case .success(let response):
             return response

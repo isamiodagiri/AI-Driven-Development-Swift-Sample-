@@ -1,0 +1,35 @@
+name: Mutation
+
+# **毎回の push では回さない。** 全件で 15 分ほどかかり、
+# 壊れたときに直すのは「テストを足す」判断であって、push を止める種類のものではない。
+on:
+  workflow_dispatch:
+  schedule:
+    # 毎週月曜 09:00 JST（= 00:00 UTC）
+    - cron: "0 0 * * 1"
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  SWIFTFORMAT_VERSION: "0.60.0"
+  SWIFTLINT_VERSION: "0.63.2"
+
+jobs:
+  mutation:
+    name: 変異検証
+    runs-on: macos-15
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # 隔離コピーを git worktree で作るので、浅いクローンでは足りない
+          fetch-depth: 0
+
+      - name: 版を記録する
+        run: swift --version
+
+      - name: 変異検証（docs/04 §6）
+        run: ./scripts/mutation-test.sh

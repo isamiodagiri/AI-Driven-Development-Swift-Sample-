@@ -54,6 +54,10 @@ DesignSystem ← Feature からのみ参照
 **View はロジックを持たない**・**ViewModel / UseCase / Repository は同種のものを参照しない**）。
 ルール自体が空振りしていないことは `scripts/test-lint-rules.sh` が違反注入で確かめる。
 
+**テストが空振りしていないこと**は `scripts/mutation-test.sh` が確かめる。
+AC ごとに書いた変異を実装へ当て、**狙った TS が本当に赤になるか**を見る
+（[04 §6](docs/04-test-strategy.md)）。緑であることと、落ちうることは別である。
+
 ## 動かす
 
 ```bash
@@ -62,6 +66,7 @@ swift build && swift test
 swiftformat --lint .                                   # 整形（.swiftformat が正）
 swiftlint --strict                                     # 層と責務の検査（INV-3〜INV-13）
 ./scripts/test-lint-rules.sh                           # Lint ルールそのものの検収
+./scripts/mutation-test.sh                             # 変異検証（15 分ほど。毎回は回さない）
 ```
 
 アプリとして起動するときだけ **XcodeGen** が要る（[App/README.md](App/README.md)）。

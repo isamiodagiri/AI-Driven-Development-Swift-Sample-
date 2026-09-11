@@ -15,5 +15,8 @@ App/.build-xcode/
 # トークン。バンドルに埋めたトークンは取り出せる（docs/02-github-api.md §5）
 App/Config.xcconfig
 
+# Python（scripts/ の補助スクリプト）
+__pycache__/
+
 # macOS
 .DS_Store

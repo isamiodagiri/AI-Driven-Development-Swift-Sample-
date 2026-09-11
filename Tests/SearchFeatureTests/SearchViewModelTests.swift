@@ -234,6 +234,9 @@ struct SearchViewModelTests {
         await sut.client.release("swift")
         await waitUntilOnMain { SearchFixture.rows(sut.viewModel.displayState.phase).count == 12 }
         await sut.client.release("swi")
+        // **古いほうが実際に届くまで待つ。** settle だけだと、届く前に測って緑になる
+        // — 負荷がかかると実際にそうなった（docs/04-test-strategy.md §6-4）
+        await waitUntil { await sut.client.deliveredQueries().contains("swi") }
         await settle()
 
         #expect(SearchFixture.rows(sut.viewModel.displayState.phase).count == 12)
