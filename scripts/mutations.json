@@ -293,6 +293,178 @@
         "TS-66",
         "TS-67"
       ]
+    },
+    {
+      "id": "M-25",
+      "ac": "UC-003 AC-1 / AC-5",
+      "label": "付け外しの判断をやめ、常に追加する",
+      "file": "Sources/UseCase/ToggleFavoriteUseCase.swift",
+      "old": "        if current.contains(where: { $0.id == summary.id }) {",
+      "new": "        if false {",
+      "expects": [
+        "TS-88"
+      ]
+    },
+    {
+      "id": "M-26",
+      "ac": "UC-003 AC-1 / AC-5",
+      "label": "付け外しの戻り値を反転する",
+      "file": "Sources/UseCase/ToggleFavoriteUseCase.swift",
+      "old": "            return false\n        }\n        try await repository.add(summary)\n        return true",
+      "new": "            return true\n        }\n        try await repository.add(summary)\n        return false",
+      "expects": [
+        "TS-88"
+      ]
+    },
+    {
+      "id": "M-27",
+      "ac": "UC-002 AC-2",
+      "label": "詳細取得の owner と name を入れ替える",
+      "file": "Sources/UseCase/FetchRepoDetailUseCase.swift",
+      "old": "        try await repository.fetchDetail(owner: owner, name: name)",
+      "new": "        try await repository.fetchDetail(owner: name, name: owner)",
+      "expects": [
+        "owner と name をそのまま"
+      ]
+    },
+    {
+      "id": "M-28",
+      "ac": "BR-010",
+      "label": "お気に入りの購読が何も流さない",
+      "file": "Sources/UseCase/ObserveFavoritesUseCase.swift",
+      "old": "        await repository.stream()",
+      "new": "        AsyncStream { $0.finish() }",
+      "expects": [
+        "TS-92",
+        "追加すると一覧に出る",
+        "TS-98"
+      ]
+    },
+    {
+      "id": "M-29",
+      "ac": "UC-003 AC-3 / BR-010",
+      "label": "ID の購読が常に空集合を流す",
+      "file": "Sources/UseCase/ObserveFavoriteIDsUseCase.swift",
+      "old": "                    continuation.yield(Set(items.map(\\.id)))",
+      "new": "                    continuation.yield([])",
+      "expects": [
+        "TS-90",
+        "TS-99",
+        "TS-100"
+      ],
+      "note": "TS-70 は期待に入れない。『外で外されると ★ が ☆ に戻る』は ☆ 方向しか見ておらず、ID が常に空という変異とは区別が付かない（最後に ☆ であればよいため）。AC-3 を見ているのは TS-90・99・100 である"
+    },
+    {
+      "id": "M-30",
+      "ac": "BR-010",
+      "label": "ID の購読を解除しても、内側の Task を止めない",
+      "file": "Sources/UseCase/ObserveFavoriteIDsUseCase.swift",
+      "old": "            continuation.onTermination = { _ in task.cancel() }",
+      "new": "            continuation.onTermination = { _ in }",
+      "expects": [
+        "TS-103"
+      ]
+    },
+    {
+      "id": "M-31",
+      "ac": "UC-003 AC-21",
+      "label": "お気に入りの一覧が常に空を返す",
+      "file": "Sources/UseCase/ListFavoriteReposUseCase.swift",
+      "old": "        await repository.favorites()",
+      "new": "        []",
+      "expects": [
+        "TS-89"
+      ]
+    },
+    {
+      "id": "M-32",
+      "ac": "UC-003 AC-7",
+      "label": "0件でも空状態にしない",
+      "file": "Sources/FavoriteFeature/ViewModel/FavoriteViewModel.swift",
+      "old": "        guard !favorites.isEmpty else {",
+      "new": "        if false {",
+      "expects": [
+        "TS-92"
+      ]
+    },
+    {
+      "id": "M-33",
+      "ac": "UC-003 AC-6 / BR-012",
+      "label": "付け外しに失敗しても通知を出さない",
+      "file": "Sources/FavoriteFeature/ViewModel/FavoriteViewModel.swift",
+      "old": "                toast = \"お気に入りを更新できませんでした\"",
+      "new": "                _ = error",
+      "expects": [
+        "TS-91"
+      ]
+    },
+    {
+      "id": "M-34",
+      "ac": "UC-003 AC-5",
+      "label": "行と要約の対応を持たない（削除する相手が引けない）",
+      "file": "Sources/FavoriteFeature/ViewModel/FavoriteViewModel.swift",
+      "old": "        summaries = favorites.reduce(into: [:]) { result, favorite in\n            result[favorite.id.rawValue] = favorite.summary\n        }",
+      "new": "        summaries = [:]",
+      "expects": [
+        "削除すると一覧から消える",
+        "TS-95"
+      ]
+    },
+    {
+      "id": "M-35",
+      "ac": "UC-003 AC-1",
+      "label": "お気に入り画面の行を、お気に入りでないものとして描く",
+      "file": "Sources/FavoriteFeature/ViewModel/FavoriteViewModel.swift",
+      "old": "            RepoDisplayMapper.display(for: favorite.summary, isFavorite: true, now: timestamp)",
+      "new": "            RepoDisplayMapper.display(for: favorite.summary, isFavorite: false, now: timestamp)",
+      "expects": [
+        "追加すると一覧に出る"
+      ]
+    },
+    {
+      "id": "M-36",
+      "ac": "BR-013",
+      "label": "並びを Repository の順から反転する",
+      "file": "Sources/FavoriteFeature/ViewModel/FavoriteViewModel.swift",
+      "old": "        let rows = favorites.map { favorite in",
+      "new": "        let rows = favorites.reversed().map { favorite in",
+      "expects": [
+        "並びは追加した新しい順"
+      ]
+    },
+    {
+      "id": "M-37",
+      "ac": "UC-003 AC-20",
+      "label": "onAppear の二重起動を防がない",
+      "file": "Sources/FavoriteFeature/ViewModel/FavoriteViewModel.swift",
+      "old": "        guard !isStarted else { return }",
+      "new": "        if false { return }",
+      "expects": [
+        "TS-104"
+      ]
+    },
+    {
+      "id": "M-38",
+      "ac": "UC-002 AC-20 / AC-21",
+      "label": "詳細の取得に失敗したとき、一覧の要約から作り直さない",
+      "file": "Sources/RepoDetailFeature/ViewModel/RepoDetailViewModel.swift",
+      "old": "        initialDisplay.map { RepoDisplayMapper.summary(from: $0) }",
+      "new": "        nil",
+      "expects": [
+        "TS-71"
+      ]
+    },
+    {
+      "id": "M-39",
+      "ac": "UC-001 AC-28",
+      "label": "追加読み込みの結果を、検索語が変わっても捨てない",
+      "file": "Sources/SearchFeature/ViewModel/SearchViewModel.swift",
+      "old": "                // 検索語が変わっていたら、このページは捨てる（AC-28）\n                guard token == generation else { return }",
+      "new": "                // 検索語が変わっていたら、このページは捨てる（AC-28）\n                if false { return }",
+      "expects": [
+        "TS-42b"
+      ],
+      "note": "TS-42 では死なない。キャンセルが先に効いて catch の早期 return に入り、世代番号まで到達しないためである（cancel の陰に隠れる）。TS-42b は ignoresCancellation でその陰を外して見る"
     }
   ]
 }

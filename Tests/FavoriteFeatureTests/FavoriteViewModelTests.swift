@@ -58,6 +58,19 @@ struct FavoriteViewModelTests {
         #expect(row?.fullName == "apple/swift")
     }
 
+    @Test("TS-104 onAppear を2回呼んでも、購読は1つだけ", .timeLimit(.minutes(1)))
+    func doesNotSubscribeTwice() async {
+        let sut = Self.makeSUT()
+
+        sut.viewModel.onAppear()
+        await waitUntil { await sut.favorites.activeSubscriptionCount() == 1 }
+
+        // 画面が作り直されるたびに購読が積み上がると、更新のたびに同じ仕事を何度もする
+        await waitForUnwanted { await sut.favorites.activeSubscriptionCount() > 1 }
+        let count = await sut.favorites.activeSubscriptionCount()
+        #expect(count == 1)
+    }
+
     @Test("TS-91 更新に失敗したら表示は元に戻り、通知が出る")
     func revertsWhenRemoveFails() async {
         let sut = Self.makeSUT()

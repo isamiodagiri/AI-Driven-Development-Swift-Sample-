@@ -97,6 +97,26 @@ struct SearchViewModelPagingTests {
         #expect(SearchFixture.rows(sut.viewModel.displayState.phase).count == 12)
     }
 
+    @Test("TS-42b キャンセルが間に合わなくても、検索語が変わっていればそのページは捨てる")
+    func discardsLoadMoreEvenWhenCancellationLost() async {
+        // キャンセルが効くなら TS-42 で足りる。**効かなかったとき**に世代番号が働くことを見る
+        // — cancel の陰に隠れて、世代番号を消しても誰も赤にならなかった
+        //   （docs/04-test-strategy.md §6-6）
+        let sut = await SearchFixture.loadedSUT(gateSecondPage: true, secondPageIgnoresCancellation: true)
+        sut.viewModel.onReachedLoadMoreTrigger()
+        await waitUntil { await sut.client.requestCount == 2 }
+
+        await sut.client.set(.success(Fixture.response("search_repositories_last_page")), forQuery: "other")
+        sut.viewModel.query = "other"
+        await waitUntilOnMain { SearchFixture.rows(sut.viewModel.displayState.phase).count == 12 }
+
+        await sut.client.release("swift#2")
+        await waitUntil { await sut.client.deliveredQueries().contains("swift#2") }
+        await waitForUnwantedOnMain { SearchFixture.rows(sut.viewModel.displayState.phase).count != 12 }
+
+        #expect(SearchFixture.rows(sut.viewModel.displayState.phase).count == 12)
+    }
+
     @Test("TS-24b hasMore が false なら、末尾に達しても要求しない")
     func doesNotLoadMoreWhenExhausted() async {
         let sut = SearchFixture.makeSUT()

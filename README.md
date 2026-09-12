@@ -7,10 +7,10 @@ GitHub の**公開情報**を検索・閲覧する SwiftUI サンプルアプリ
 
 > **現在の状態**: M1〜M5 まで実装済み。
 > Swift 6.2.1 / SwiftLint 0.63.2 / SwiftFormat 0.60.0 で、
-> **`swift build`・`swift test`（129 件）・`swiftlint --strict`・`swiftformat --lint .`・
+> **`swift build`・`swift test`（132 件）・`swiftlint --strict`・`swiftformat --lint .`・
 > `./scripts/test-lint-rules.sh`（13 件）がすべて緑**である（2026-09-06 に実機で確認）。
 >
-> **TS は 104 件のうち 103 件が実装済み**で、残る1件（TS-94・スワイプ削除）は
+> **TS は 107 件のうち 106 件が実装済み**で、残る1件（TS-94・スワイプ削除）は
 > **`ViewInspector` が `.swipeActions` に届かないため観測できない**
 > — 書き忘れではないことを [04 §3-1](docs/04-test-strategy.md) に理由ごと残してある。
 > **`App/` の Xcode プロジェクトは XcodeGen で生成する**（[App/README.md](App/README.md)・裁定 D-7・D-24）。
@@ -55,8 +55,10 @@ DesignSystem ← Feature からのみ参照
 ルール自体が空振りしていないことは `scripts/test-lint-rules.sh` が違反注入で確かめる。
 
 **テストが空振りしていないこと**は `scripts/mutation-test.sh` が確かめる。
-AC ごとに書いた変異を実装へ当て、**狙った TS が本当に赤になるか**を見る
+AC ごとに書いた変異（39 件）を実装へ当て、**狙った TS が本当に赤になるか**を見る
 （[04 §6](docs/04-test-strategy.md)）。緑であることと、落ちうることは別である。
+対象は **ViewModel / UseCase / Repository / Feature の View / DesignSystem** で、
+`Core` の整形や `Presentation` の写像は**まだ当てていない**（[04 §6-6](docs/04-test-strategy.md)）。
 
 ## 動かす
 

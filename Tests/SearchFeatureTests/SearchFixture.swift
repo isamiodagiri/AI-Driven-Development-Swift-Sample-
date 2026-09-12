@@ -50,12 +50,19 @@ enum SearchFixture {
     /// 1ページ目まで読み終えた状態を作る。
     static func loadedSUT(
         gateSecondPage: Bool = false,
+        secondPageIgnoresCancellation: Bool = false,
         secondPageOutcome: StubHTTPClient.Outcome = .success(Fixture.response("search_repositories_page2"))
     ) async -> SUT {
         let sut = makeSUT()
         await sut.client.set(.success(Fixture.response("search_repositories_ok")), forQuery: "swift", page: 1)
         // 2ページ目は同じ検索語なので、ページ番号までキーに含めて分ける
-        await sut.client.set(secondPageOutcome, forQuery: "swift", page: 2, manualRelease: gateSecondPage)
+        await sut.client.set(
+            secondPageOutcome,
+            forQuery: "swift",
+            page: 2,
+            manualRelease: gateSecondPage,
+            ignoresCancellation: secondPageIgnoresCancellation
+        )
         sut.viewModel.query = "swift"
         await waitUntilOnMain { rows(sut.viewModel.displayState.phase).count == 30 }
         return sut

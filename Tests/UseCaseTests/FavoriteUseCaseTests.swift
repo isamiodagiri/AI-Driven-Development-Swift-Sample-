@@ -45,6 +45,26 @@ struct FavoriteUseCaseTests {
         #expect(requestCount == 0)
     }
 
+    @Test("TS-103 ID の購読を終えると、上流の購読も畳まれる", .timeLimit(.minutes(1)))
+    func releasesUpstreamOnTermination() async {
+        let repository = makeRepository()
+        let observe = ObserveFavoriteIDsUseCase(repository: repository)
+
+        do {
+            let stream = await observe()
+            var iterator = stream.makeAsyncIterator()
+            _ = await iterator.next()
+            let count = await repository.activeSubscriptionCount()
+            #expect(count == 1)
+        }
+
+        // ここで畳めないと、画面を閉じるたびに購読が積み上がる。
+        // TS-85 は Repository 側を見ており、**UseCase が挟まると別の話になる**
+        await waitUntil { await repository.activeSubscriptionCount() == 0 }
+        let count = await repository.activeSubscriptionCount()
+        #expect(count == 0)
+    }
+
     @Test("ID の購読は、変化のたびに ID の集合を流す", .timeLimit(.minutes(1)))
     func observesIdentifiers() async throws {
         let repository = makeRepository()

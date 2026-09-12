@@ -30,7 +30,11 @@ struct FavoriteScreenViewTests {
             .find(viewWithAccessibilityIdentifier: AppIdentifier.repoRowFavoriteButton)
         try button.button().tap()
 
+        // **消えたことを主張する。** 待つだけだと、消えなくても時間切れで緑になる
+        // — 変異検証で実際に素通りした（docs/04-test-strategy.md §6-6）
         await waitUntilOnMain { FavoriteViewModelTests.rows(sut.viewModel.state.phase).isEmpty }
+        #expect(FavoriteViewModelTests.rows(sut.viewModel.state.phase).isEmpty)
+
         // 確認を挟まないのが AC-6 である。挟んでいれば alert / confirmationDialog が居る
         #expect(try screen.inspect().findAll(ViewType.Alert.self).isEmpty)
         #expect(try screen.inspect().findAll(ViewType.ConfirmationDialog.self).isEmpty)

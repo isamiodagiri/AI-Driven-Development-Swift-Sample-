@@ -34,8 +34,13 @@ def run_tests(root):
     return set(re.findall(r'Test "([^"]+)" (?:recorded an issue|failed)', blob)), False, True
 
 
-def ts_numbers(names):
-    return {m.group(1) for n in names if (m := re.match(r"(TS-[0-9]+[a-z]?)", n))}
+def unmet(expected, names):
+    """死ぬはずだったのに生きているものを返す。
+
+    expects には TS 番号のほか、**テスト名の先頭**も書ける
+    （TS を持たないテストが観測点になっていることがあるため）。
+    """
+    return {e for e in expected if not any(n.startswith(e) for n in names)}
 
 
 def apply_mutation(root, mutation):
@@ -74,7 +79,6 @@ def main():
         restore(root, mutation)
 
         expected = set(mutation.get("expects", []))
-        actual = ts_numbers(red)
 
         if not built:
             print(f"✗ {label}\n    ビルドできない（変異が型を壊している。当て方を直すこと）")
@@ -83,20 +87,26 @@ def main():
             print(f"✗ {label}\n    **止まったまま**になった。赤で落ちる形に直すこと（docs/04 §6-3-2）")
             failures.append(mutation["id"])
         elif not expected:
-            if actual:
-                print(f"✓ {label}\n    生き残るはずが死んだ: {' '.join(sorted(actual))}")
+            # expects が空のものは2種類ある。kind がどちらかを言う。
+            #   equivalent = 振る舞いが変わっていないので、死なないのが正しい
+            #   gap        = 振る舞いは変わったのに、見ているテストが無い
+            kind = mutation.get("kind", "equivalent")
+            if red:
+                print(f"✓ {label}\n    生き残るはずが死んだ: {' '.join(sorted(red))}")
                 print("      → カタログの reason が古い。読み直すこと")
+            elif kind == "gap":
+                print(f"✗ {label}\n    生き残った（**観測点が無い**。テストを足すこと）")
+                failures.append(mutation["id"])
             else:
                 print(f"✓ {label}\n    生き残った（等価変異として想定どおり）")
-        elif missing := expected - actual:
-            print(f"✗ {label}\n    死ぬはずの TS が生きている: {' '.join(sorted(missing))}")
-            if actual:
-                print(f"      （代わりに死んだ: {' '.join(sorted(actual))}）")
+        elif missing := unmet(expected, red):
+            print(f"✗ {label}\n    死ぬはずのテストが生きている: {' '.join(sorted(missing))}")
+            if red:
+                print(f"      （代わりに死んだ: {' '.join(sorted(red))}）")
             failures.append(mutation["id"])
         else:
-            extra = actual - expected
-            note = f"（ほかに {' '.join(sorted(extra))} も）" if extra else ""
-            print(f"✓ {label}\n    死んだ: {' '.join(sorted(expected))} {note}")
+            print(f"✓ {label}\n    死んだ: {' '.join(sorted(expected))}"
+                  + (f"（赤 {len(red)} 件）" if len(red) > len(expected) else ""))
 
     print()
     print(f"変異 {len(mutations)} 件 / 問題 {len(failures)} 件"
