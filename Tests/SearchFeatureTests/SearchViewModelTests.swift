@@ -41,7 +41,7 @@ struct SearchViewModelTests {
         // 「1回来た」までは待ち、「それ以上来ない」だけを settle で見る。
         // settle だけで済ませると、debounce が明ける前に測ってしまい負荷で落ちる
         await waitUntil { await sut.client.requestCount == 1 }
-        await settle()
+        await waitForUnwanted { await sut.client.requestCount > 1 }
 
         let queries = await sut.client.requestedQueries()
         #expect(queries == ["swi"])
@@ -55,7 +55,7 @@ struct SearchViewModelTests {
         sut.viewModel.query = "swift"
         await waitUntilOnMain { if case .loaded = sut.viewModel.displayState.phase { true } else { false } }
         sut.viewModel.query = "swift"
-        await settle()
+        await waitForUnwanted { await sut.client.requestCount > 1 }
 
         let count = await sut.client.requestCount
         #expect(count == 1)
@@ -90,7 +90,7 @@ struct SearchViewModelTests {
         sut.viewModel.query = ""
         await waitUntilOnMain { sut.viewModel.displayState.phase == .initial }
         await sut.client.release("swift")
-        await settle()
+        await waitForUnwantedOnMain { sut.viewModel.displayState.phase != .initial }
 
         #expect(sut.viewModel.displayState.phase == .initial)
     }
@@ -102,7 +102,7 @@ struct SearchViewModelTests {
 
         sut.viewModel.query = "   "
 
-        await settle()
+        await waitForUnwanted { await sut.client.requestCount > 0 }
         let count = await sut.client.requestCount
         #expect(count == 0)
         #expect(sut.viewModel.displayState.phase == .initial)
@@ -237,7 +237,7 @@ struct SearchViewModelTests {
         // **古いほうが実際に届くまで待つ。** settle だけだと、届く前に測って緑になる
         // — 負荷がかかると実際にそうなった（docs/04-test-strategy.md §6-4）
         await waitUntil { await sut.client.deliveredQueries().contains("swi") }
-        await settle()
+        await waitForUnwantedOnMain { SearchFixture.rows(sut.viewModel.displayState.phase).count != 12 }
 
         #expect(SearchFixture.rows(sut.viewModel.displayState.phase).count == 12)
     }
@@ -249,7 +249,7 @@ struct SearchViewModelTests {
 
         sut.viewModel.query = "swift"
         await waitUntilOnMain { sut.viewModel.displayState.phase == .loading }
-        await settle()
+        await waitForUnwantedOnMain { sut.viewModel.displayState.phase != .loading }
 
         // キャンセルが失敗に化けるなら、ここで .failed に変わっている
         #expect(sut.viewModel.displayState.phase == .loading)

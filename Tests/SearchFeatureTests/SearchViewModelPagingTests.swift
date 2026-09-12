@@ -62,7 +62,7 @@ struct SearchViewModelPagingTests {
         sut.viewModel.onReachedLoadMoreTrigger()
         await waitUntil { await sut.client.requestCount == 2 }
         sut.viewModel.onReachedLoadMoreTrigger()
-        await settle()
+        await waitForUnwanted { await sut.client.requestCount > 2 }
 
         let count = await sut.client.requestCount
         #expect(count == 2)
@@ -91,7 +91,8 @@ struct SearchViewModelPagingTests {
         sut.viewModel.query = "other"
         await waitUntilOnMain { SearchFixture.rows(sut.viewModel.displayState.phase).count == 12 }
         await sut.client.release("swift#2")
-        await settle()
+        await waitUntil { await sut.client.deliveredQueries().contains("swift#2") }
+        await waitForUnwantedOnMain { SearchFixture.rows(sut.viewModel.displayState.phase).count != 12 }
 
         #expect(SearchFixture.rows(sut.viewModel.displayState.phase).count == 12)
     }
@@ -104,7 +105,7 @@ struct SearchViewModelPagingTests {
         await waitUntilOnMain { SearchFixture.rows(sut.viewModel.displayState.phase).count == 12 }
 
         sut.viewModel.onReachedLoadMoreTrigger()
-        await settle()
+        await waitForUnwanted { await sut.client.requestCount > 1 }
 
         let count = await sut.client.requestCount
         #expect(count == 1)

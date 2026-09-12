@@ -174,15 +174,23 @@ struct RepoDetailViewModelTests {
             manualRelease: true
         )
         sut.viewModel.onAppear()
-        await waitUntilOnMain { true }
+        await waitUntil { await sut.client.requestCount == 1 }
 
         sut.viewModel.onDisappear()
-        await settle()
+
+        // **止めたことそのもの**を見る。「loaded にならない」だけだと、
+        // 応答を保留したまま解放していないので、止めていなくても素通りする
+        // — TS-34 と同じ穴だった（docs/04-test-strategy.md §6-5）
+        await waitUntil { await sut.client.cancelledQueries().contains("/repos/owner-1/repo-1") }
+        let cancelled = await sut.client.cancelledQueries()
+        #expect(cancelled.contains("/repos/owner-1/repo-1"))
 
         // 取得は完了していないので、詳細の項目は入っていない
         if case .loaded = sut.viewModel.state.phase {
             Issue.record("閉じたあとに loaded になってはいけない")
         }
+        // 止め損ねる実装だと、解放されない要求がテストを跨いで残る
+        await sut.client.release("/repos/owner-1/repo-1")
     }
 
     @Test("TS-67 閉じたあとに応答が届いても状態は変わらない")
@@ -195,11 +203,13 @@ struct RepoDetailViewModelTests {
             ignoresCancellation: true
         )
         sut.viewModel.onAppear()
-        await settle()
+        await waitUntil { await sut.client.requestCount == 1 }
         sut.viewModel.onDisappear()
 
         await sut.client.release("/repos/owner-1/repo-1")
-        await settle()
+        // 応答が実際に届いてから見る。届く前に測ると、壊れていても緑になる
+        await waitUntil { await sut.client.deliveredQueries().contains("/repos/owner-1/repo-1") }
+        await waitForUnwantedOnMain { if case .loaded = sut.viewModel.state.phase { true } else { false } }
 
         if case .loaded = sut.viewModel.state.phase {
             Issue.record("閉じたあとの応答で状態を書いてはいけない")
@@ -215,11 +225,11 @@ struct RepoDetailViewModelTests {
             manualRelease: true
         )
         sut.viewModel.onAppear()
-        await settle()
+        await waitUntil { await sut.client.requestCount == 1 }
 
         sut.viewModel.retry()
         sut.viewModel.retry()
-        await settle()
+        await waitForUnwanted { await sut.client.requestCount > 2 }
         await sut.client.release("/repos/owner-1/repo-1")
         await waitUntilOnMain { if case .loaded = sut.viewModel.state.phase { true } else { false } }
 

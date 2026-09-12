@@ -12,75 +12,107 @@
     "テストを足したら、対応する変異もここへ足す。片方だけ足すと、",
     "足したテストが本当に何かを捕まえているか誰も知らないままになる。"
   ],
-
   "mutations": [
     {
-      "id": "M-01", "ac": "AC-31",
+      "id": "M-01",
+      "ac": "AC-31",
       "label": "403 の x-ratelimit-remaining を見ずに、常に unknown にする",
       "file": "Sources/Repository/GitHubErrorMapper.swift",
       "old": "if response.header(\"x-ratelimit-remaining\") == \"0\" {",
       "new": "if false {",
-      "expects": ["TS-9", "TS-10", "TS-11", "TS-45", "TS-46", "TS-64"]
+      "expects": [
+        "TS-9",
+        "TS-10",
+        "TS-11",
+        "TS-45",
+        "TS-46",
+        "TS-64"
+      ]
     },
     {
-      "id": "M-02", "ac": "AC-22",
+      "id": "M-02",
+      "ac": "AC-22",
       "label": "page を常に 1 で要求する",
       "file": "Sources/Repository/RepoRepository/RepoRepositoryImpl.swift",
       "old": "QueryItem(name: \"page\", value: String(page)),",
       "new": "QueryItem(name: \"page\", value: \"1\"),",
-      "expects": ["TS-4", "TS-39", "TS-41"],
+      "expects": [
+        "TS-4",
+        "TS-39",
+        "TS-41"
+      ],
       "note": "TS-40 も落ちることがあるが、期待には入れない。page が 1 に固定されるとスタブの鍵が swift#2 でなくなり、TS-40 が前提にしている「2ページ目が進行中」という状況そのものが崩れるためである。観測点ではなく前提が壊れているだけなので、負荷しだいで落ちたり落ちなかったりする"
     },
     {
-      "id": "M-03", "ac": "AC-5",
+      "id": "M-03",
+      "ac": "AC-5",
       "label": "空白だけの検索語でも Repository を呼ぶ",
       "file": "Sources/UseCase/SearchReposUseCase.swift",
       "old": "guard let query = SearchQuery(rawQuery) else { return nil }",
       "new": "guard let query = SearchQuery(rawQuery) ?? SearchQuery(\"x\") else { return nil }",
-      "expects": ["TS-19", "TS-20"]
+      "expects": [
+        "TS-19",
+        "TS-20"
+      ]
     },
     {
-      "id": "M-04", "ac": "AC-24",
+      "id": "M-04",
+      "ac": "AC-24",
       "label": "hasMore が false でも次ページを要求する",
       "file": "Sources/UseCase/LoadMoreReposUseCase.swift",
       "old": "guard hasMore else { return nil }",
       "new": "if false { return nil }",
-      "expects": ["TS-23"]
+      "expects": [
+        "TS-23"
+      ]
     },
     {
-      "id": "M-05", "ac": "AC-25",
+      "id": "M-05",
+      "ac": "AC-25",
       "label": "取得済み 1000 件の上限を見ない",
       "file": "Sources/UseCase/LoadMoreReposUseCase.swift",
       "old": "guard loadedCount < Self.resultLimit else { return nil }",
       "new": "if false { return nil }",
-      "expects": ["TS-22"]
+      "expects": [
+        "TS-22"
+      ]
     },
     {
-      "id": "M-06", "ac": "AC-4",
+      "id": "M-06",
+      "ac": "AC-4",
       "label": "同じ検索語を弾かない（removeDuplicates を外す）",
       "file": "Sources/SearchFeature/ViewModel/SearchViewModel.swift",
       "old": "            .removeDuplicates()\n",
       "new": "",
-      "expects": ["TS-27"]
+      "expects": [
+        "TS-27"
+      ]
     },
     {
-      "id": "M-07", "ac": "AC-2 / AC-3",
+      "id": "M-07",
+      "ac": "AC-2 / AC-3",
       "label": "debounce を丸ごと外す",
       "file": "Sources/SearchFeature/ViewModel/SearchViewModel.swift",
       "old": "            .debounce(for: debounceInterval, scheduler: scheduler)\n",
       "new": "",
-      "expects": ["TS-26"]
+      "expects": [
+        "TS-26"
+      ]
     },
     {
-      "id": "M-08", "ac": "AC-3",
+      "id": "M-08",
+      "ac": "AC-3",
       "label": "debounce を delay に替える（遅れるが束ねない）",
       "file": "Sources/SearchFeature/ViewModel/SearchViewModel.swift",
       "old": ".debounce(for: debounceInterval, scheduler: scheduler)",
       "new": ".delay(for: debounceInterval, scheduler: scheduler)",
-      "expects": ["TS-26"]
+      "expects": [
+        "TS-26"
+      ]
     },
     {
-      "id": "M-09", "ac": "AC-3",
+      "id": "M-09",
+      "ac": "AC-3",
       "label": "debounce の間隔を 0 にする",
       "file": "Sources/SearchFeature/ViewModel/SearchViewModel.swift",
       "old": ".debounce(for: debounceInterval, scheduler: scheduler)",
@@ -89,116 +121,178 @@
       "reason": "等価変異。scheduler が .main なので、同じ turn の中の3回の代入は 0 秒でも最後の1つに束ねられる。振る舞いが変わっていないので、死なないのが正しい（docs/04 §6-1）"
     },
     {
-      "id": "M-10", "ac": "AC-16",
+      "id": "M-10",
+      "ac": "AC-16",
       "label": "前の検索を cancel しない",
       "file": "Sources/SearchFeature/ViewModel/SearchViewModel.swift",
       "old": "        searchTask?.cancel()\n        loadMoreTask?.cancel()",
       "new": "        _ = searchTask\n        _ = loadMoreTask",
-      "expects": ["TS-34b"]
+      "expects": [
+        "TS-34b"
+      ]
     },
     {
-      "id": "M-11", "ac": "AC-17 / BR-004",
+      "id": "M-11",
+      "ac": "AC-17 / BR-004",
       "label": "世代番号で古い応答を弾かない",
       "file": "Sources/SearchFeature/ViewModel/SearchViewModel.swift",
       "old": "                guard token == generation else { return }",
       "new": "                if false { return }",
-      "expects": ["TS-29", "TS-35"]
+      "expects": [
+        "TS-29",
+        "TS-35"
+      ]
     },
     {
-      "id": "M-12", "ac": "AC-18",
+      "id": "M-12",
+      "ac": "AC-18",
       "label": "キャンセルを失敗として表示する",
       "file": "Sources/SearchFeature/ViewModel/SearchViewModel.swift",
       "old": "                guard !GitHubErrorPresenter.isCancellation(error) else { return }",
       "new": "                if false { return }",
-      "expects": ["TS-36"]
+      "expects": [
+        "TS-36"
+      ]
     },
     {
-      "id": "M-13", "ac": "UC-002 AC-1",
+      "id": "M-13",
+      "ac": "UC-002 AC-1",
       "label": "初期表示があっても partial にせず loading から始める",
       "file": "Sources/RepoDetailFeature/ViewModel/RepoDetailViewModel.swift",
       "old": "        if let initialDisplay {",
       "new": "        if let initialDisplay, false {",
-      "expects": ["TS-58", "TS-60"]
+      "expects": [
+        "TS-58",
+        "TS-60"
+      ]
     },
     {
-      "id": "M-14", "ac": "UC-002 AC-9",
+      "id": "M-14",
+      "ac": "UC-002 AC-9",
       "label": "取得失敗を partial にせず、全部 failed にする",
       "file": "Sources/RepoDetailFeature/ViewModel/RepoDetailViewModel.swift",
       "old": "        case .partial(let header, let stats, _):\n            state = RepoDetailState(phase: .partial(header: header, stats: stats, error: error), htmlURL: state.htmlURL)",
       "new": "        case .partial:\n            state = RepoDetailState(phase: .failed(error), htmlURL: state.htmlURL)",
-      "expects": ["TS-60"]
+      "expects": [
+        "TS-60"
+      ]
     },
     {
-      "id": "M-15", "ac": "UC-003 AC-2",
+      "id": "M-15",
+      "ac": "UC-003 AC-2",
       "label": "お気に入りの並びを、追加した古い順にする",
       "file": "Sources/Repository/FavoriteRepository/FavoriteRepositoryImpl.swift",
       "old": "items.sorted { $0.addedAt > $1.addedAt }",
       "new": "items.sorted { $0.addedAt < $1.addedAt }",
-      "expects": ["TS-80"]
+      "expects": [
+        "TS-80"
+      ]
     },
     {
-      "id": "M-16", "ac": "BR-010",
+      "id": "M-16",
+      "ac": "BR-010",
       "label": "購読の解除で continuation を捨てない",
       "file": "Sources/Repository/FavoriteRepository/FavoriteRepositoryImpl.swift",
       "old": "        continuations[id] = nil",
       "new": "        _ = id",
-      "expects": ["TS-85"]
+      "expects": [
+        "TS-85"
+      ]
     },
     {
-      "id": "M-17", "ac": "BR-010",
+      "id": "M-17",
+      "ac": "BR-010",
       "label": "変更を購読者へ通知しない",
       "file": "Sources/Repository/FavoriteRepository/FavoriteRepositoryImpl.swift",
       "old": "        for continuation in continuations.values {\n            continuation.yield(next)",
       "new": "        for continuation in [AsyncStream<[FavoriteRepo]>.Continuation]() {\n            continuation.yield(next)",
-      "expects": ["TS-70", "TS-84", "TS-90", "TS-93", "TS-98", "TS-99", "TS-100"]
+      "expects": [
+        "TS-70",
+        "TS-84",
+        "TS-90",
+        "TS-93",
+        "TS-98",
+        "TS-99",
+        "TS-100"
+      ]
     },
     {
-      "id": "M-18", "ac": "UC-001 AC-8",
+      "id": "M-18",
+      "ac": "UC-001 AC-8",
       "label": "スケルトンを6行から5行にする",
       "file": "Sources/SearchFeature/View/SearchScreen.swift",
       "old": "private static let skeletonRowIDs = [0, 1, 2, 3, 4, 5]",
       "new": "private static let skeletonRowIDs = [0, 1, 2, 3, 4]",
-      "expects": ["TS-48"]
+      "expects": [
+        "TS-48"
+      ]
     },
     {
-      "id": "M-19", "ac": "UC-001 AC-34",
+      "id": "M-19",
+      "ac": "UC-001 AC-34",
       "label": "行タップの結線（onSelectRepo）を外す",
       "file": "Sources/SearchFeature/View/SearchScreen.swift",
       "old": ".onTapGesture { onSelectRepo(row.display) }",
       "new": ".onTapGesture {}",
-      "expects": ["TS-51"]
+      "expects": [
+        "TS-51"
+      ]
     },
     {
-      "id": "M-20", "ac": "UC-001 AC-10",
+      "id": "M-20",
+      "ac": "UC-001 AC-10",
       "label": "説明が nil でも説明の Text を出す",
       "file": "Sources/DesignSystem/Components/AppRepoRow.swift",
       "old": "if let description = display.description {",
       "new": "if true { let description = display.description ?? \"\";",
-      "expects": ["TS-49"]
+      "expects": [
+        "TS-49"
+      ]
     },
     {
-      "id": "M-21", "ac": "D-19",
+      "id": "M-21",
+      "ac": "D-19",
       "label": "☆ / ★ の読み上げ名を、状態によらず固定にする",
       "file": "Sources/DesignSystem/Components/AppRepoRow.swift",
       "old": ".accessibilityLabel(display.isFavorite ? \"お気に入りから外す\" : \"お気に入りに追加\")",
       "new": ".accessibilityLabel(\"お気に入り\")",
-      "expects": ["TS-101"]
+      "expects": [
+        "TS-101"
+      ]
     },
     {
-      "id": "M-22", "ac": "D-19",
+      "id": "M-22",
+      "ac": "D-19",
       "label": "数値バッジの読み上げ名を、数字だけにする",
       "file": "Sources/DesignSystem/Components/AppStatBadge.swift",
       "old": ".accessibilityLabel(\"\\(label) \\(text)\")",
       "new": ".accessibilityLabel(text)",
-      "expects": ["TS-102"]
+      "expects": [
+        "TS-102"
+      ]
     },
     {
-      "id": "M-23", "ac": "UC-002 AC-5",
+      "id": "M-23",
+      "ac": "UC-002 AC-5",
       "label": "topics が空でもトピックの行を出す",
       "file": "Sources/RepoDetailFeature/View/RepoDetailScreen.swift",
       "old": "        if !topics.isEmpty {",
       "new": "        if true {",
-      "expects": ["TS-75"]
+      "expects": [
+        "TS-75"
+      ]
+    },
+    {
+      "id": "M-24",
+      "ac": "UC-002 AC-15 / AC-16",
+      "label": "画面を閉じても取得を止めない（onDisappear で cancel しない）",
+      "file": "Sources/RepoDetailFeature/ViewModel/RepoDetailViewModel.swift",
+      "old": "        fetchTask?.cancel()\n        fetchTask = nil\n        favoriteTask?.cancel()\n        favoriteTask = nil",
+      "new": "        _ = fetchTask\n        _ = favoriteTask",
+      "expects": [
+        "TS-66",
+        "TS-67"
+      ]
     }
   ]
 }
